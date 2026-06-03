@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import ScrollReveal from '../ui/ScrollReveal';
-import TextScramble from '../ui/TextScramble';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,21 +10,47 @@ const panels = [
     title: 'Author',
     descriptor: 'Crafting narratives that explore the human experience',
     anchor: 'bottom-left',
-    image: '/images/author_photo.png',
+    image: '/images/author.png',
+    objectPosition: 'center 15%',
+    skipWonk: false,
   },
   {
     number: '02',
     title: 'Podcaster',
     descriptor: 'Intentional conversations — unfiltered, deep, alive',
     anchor: 'top-right',
-    image: '/images/podcaster_photo.png',
+    image: '/images/Podcaster.jpeg',
+    objectPosition: 'center 10%',
+    skipWonk: false,
   },
   {
     number: '03',
-    title: 'Comedian',
+    title: 'Standup Comedian',
     descriptor: 'Truth through laughter — multilingual, sharp, human',
     anchor: 'bottom-left',
-    image: '/images/comedian_photo.png',
+    image: '/images/Comedian.jpeg',
+    objectPosition: 'center top',
+    containerTop: '15vh',
+    skipWonk: false,
+  },
+  {
+    number: '04',
+    title: 'Publisher',
+    descriptor: 'Curating and elevating stories that deserve to be heard',
+    anchor: 'top-right',
+    image: '/images/Publisher.png',
+    objectPosition: 'center 15%',
+    skipWonk: false,
+  },
+  {
+    number: '05',
+    title: 'Lyricist &',
+    titleLine2: 'Music Composer',
+    descriptor: 'Translating raw emotions into melodies and verses',
+    anchor: 'bottom-left',
+    image: '/images/Lyricist.jpeg',
+    objectPosition: 'center 15%',
+    skipWonk: true,
   },
 ];
 
@@ -39,12 +63,10 @@ export default function ExpertiseSection() {
     const track = trackRef.current;
     if (!section || !track) return;
 
-    // Horizontal scroll on all devices
     const mm = gsap.matchMedia();
 
     mm.add('all', () => {
       const panelEls = track.querySelectorAll('.expertise-panel');
-      const totalWidth = (panelEls.length - 1) * window.innerWidth;
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -58,13 +80,14 @@ export default function ExpertiseSection() {
         },
       });
 
-      tl.to(track, { 
-        x: () => -(track.scrollWidth - window.innerWidth), 
-        ease: 'none' 
+      tl.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: 'none'
       });
 
-      // Variable font WONK morphing per panel
+      // Variable font WONK morphing — skip panels with special characters
       panelEls.forEach((panel, i) => {
+        if (panels[i]?.skipWonk) return;
         const titleEl = panel.querySelector('.panel-title');
         if (!titleEl) return;
         gsap.fromTo(
@@ -108,7 +131,7 @@ export default function ExpertiseSection() {
           const isTopRight = panel.anchor === 'top-right';
           return (
             <div
-              key={panel.title}
+              key={panel.number}
               className="expertise-panel relative flex-shrink-0 h-full border-r border-gold-500/15"
               style={{ width: '100vw' }}
             >
@@ -125,47 +148,55 @@ export default function ExpertiseSection() {
                 {panel.number}
               </span>
 
-              {/* Background Image placed opposite to text */}
+              {/* Background Image — CSS mask for seamless edge blending */}
               <div
-                className={`absolute w-[90%] md:w-[60%] lg:w-[45%] h-[60vh] max-h-[700px] z-0 pointer-events-none opacity-80 ${
-                  isTopRight ? 'bottom-0 left-0 md:bottom-12 md:left-24' : 'top-0 right-0 md:top-12 md:right-24'
+                className={`absolute w-[90%] md:w-[60%] lg:w-[55%] h-[75vh] max-h-[850px] z-0 pointer-events-none ${
+                  isTopRight ? 'bottom-0 left-0 md:bottom-0 md:left-0' : 'right-0 md:right-0'
                 }`}
+                style={{
+                  top: !isTopRight ? (panel.containerTop || '0') : undefined,
+                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)',
+                  maskImage: 'linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)',
+                  WebkitMaskComposite: 'destination-in',
+                  maskComposite: 'intersect',
+                }}
               >
                 <img
                   src={panel.image}
                   alt={panel.title}
-                  className="w-full h-full object-cover mix-blend-screen grayscale-[30%] sepia-[10%] hue-rotate-[-10deg]"
-                  style={{
-                    WebkitMaskImage: 'radial-gradient(ellipse closest-side at center, black 20%, transparent 100%)',
-                    maskImage: 'radial-gradient(ellipse closest-side at center, black 20%, transparent 100%)',
-                  }}
+                  className="w-full h-full object-cover grayscale-[20%] brightness-[0.85]"
+                  style={{ objectPosition: panel.objectPosition }}
                 />
               </div>
 
               {/* Panel content — asymmetric anchoring */}
               <div
-                className={`absolute px-12 lg:px-20 py-20 max-w-3xl z-10 ${
-                  isTopRight
+                className={`absolute px-12 lg:px-20 py-20 max-w-3xl z-10 ${isTopRight
                     ? 'top-0 right-0 text-right'
                     : 'bottom-0 left-0 text-left'
-                }`}
+                  }`}
               >
                 {/* Role title — massive Fraunces */}
                 <h2
-                  className="panel-title text-[18vw] md:text-[12vw] lg:text-[9rem] leading-[0.85] tracking-tight text-cream-100 mb-6"
+                  className="panel-title text-[15vw] md:text-[10vw] lg:text-[8rem] leading-[0.85] tracking-tight text-cream-100 mb-6"
                   style={{
                     fontFamily: "'Fraunces', serif",
-                    fontVariationSettings: '"opsz" 9, "WONK" 0',
+                    fontVariationSettings: panel.skipWonk ? '"opsz" 144, "WONK" 1' : '"opsz" 9, "WONK" 0',
                   }}
                 >
                   {panel.title}
+                  {panel.titleLine2 && (
+                    <>
+                      <br />
+                      {panel.titleLine2}
+                    </>
+                  )}
                 </h2>
 
                 {/* Gold thin rule */}
                 <div
-                  className={`h-[1px] bg-gold-500/40 w-24 mb-6 ${
-                    isTopRight ? 'ml-auto' : ''
-                  }`}
+                  className={`h-[1px] bg-gold-500/40 w-24 mb-6 ${isTopRight ? 'ml-auto' : ''
+                    }`}
                 />
 
                 {/* Italic descriptor — small caps feel */}
@@ -178,7 +209,7 @@ export default function ExpertiseSection() {
 
                 {/* Number in corner — small mono */}
                 <span className="absolute top-8 left-12 lg:left-20 text-gold-500/40 font-mono text-xs tracking-[0.3em]">
-                  {panel.number} / 03
+                  {panel.number} / 0{panels.length}
                 </span>
               </div>
 
@@ -190,8 +221,6 @@ export default function ExpertiseSection() {
           );
         })}
       </div>
-
-
     </section>
   );
 }

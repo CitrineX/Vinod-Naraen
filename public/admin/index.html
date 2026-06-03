@@ -1,62 +1,14 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Content Manager - Portfolio</title>
-    <!-- Include the script that builds the page and powers Decap CMS -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    <!-- Bring in portfolio fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Bodoni+Moda:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-    <style>
-      /* Mirroring exact colors and fonts of the portfolio */
-      :root {
-        --nc-app-bg: #1A0B10; /* --color-wine-900 */
-        --nc-base-bg: #2B0D17; /* --color-wine-800 */
-        --nc-text: #FFF8F0; /* --color-cream-100 */
-        --nc-border: rgba(217, 177, 90, 0.3); /* --color-gold-500 */
-        --nc-accent: #D9B15A; /* --color-gold-500 */
-      }
-      body {
-        background-color: var(--nc-app-bg);
-        color: var(--nc-text);
-        font-family: 'Manrope', sans-serif;
-      }
-      .nc-app-header, .nc-app-sidebar {
-        background-color: var(--nc-base-bg) !important;
-        border-color: var(--nc-border) !important;
-      }
-      .nc-app-header *, .nc-app-sidebar * {
-        color: var(--nc-text) !important;
-      }
-      .nc-collectionPage-header {
-        color: var(--nc-text) !important;
-      }
-      .nc-entryEditor-toolbar {
-        background-color: var(--nc-base-bg) !important;
-        border-color: var(--nc-border) !important;
-      }
-      .nc-entryEditor-editorPane, .nc-entryEditor-previewPane {
-        background-color: var(--nc-app-bg) !important;
-        color: var(--nc-text) !important;
-        border-color: var(--nc-border) !important;
-      }
-      /* Editor Typography Overrides */
-      .nc-entryEditor-previewPane h1 {
-        font-family: 'Bodoni Moda', serif !important;
-        color: #FFF8F0 !important;
-      }
-      .nc-entryEditor-previewPane h2, .nc-entryEditor-previewPane h3 {
-        font-family: 'Bodoni Moda', serif !important;
-        color: #D9B15A !important;
-        font-style: italic !important;
-      }
-      .nc-entryEditor-previewPane p {
-        color: #C7BBAE !important; /* cream-300 */
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Decap CMS injects its app here -->
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager</title>
+</head>
+
+<body>
+  <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
+</body>
+
 </html>
