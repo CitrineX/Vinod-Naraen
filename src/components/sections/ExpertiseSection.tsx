@@ -4,6 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Prevent massive layout thrashing and lag when the mobile address bar hides/shows on scroll
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 const panels = [
   {
     number: '01',
@@ -145,6 +148,7 @@ export default function ExpertiseSection() {
                   alt={panel.title}
                   className="w-full h-full object-cover"
                   style={{ objectPosition: panel.objectPosition }}
+                  decoding="async"
                 />
               </div>
 
