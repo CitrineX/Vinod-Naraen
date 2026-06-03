@@ -135,12 +135,14 @@ export default function ExpertiseSection() {
 
               {/* Background Image — Optimized with a single radial mask to perfectly smudge all 4 edges */}
               <div
-                className={`absolute w-[90%] md:w-[60%] lg:w-[55%] h-[75vh] max-h-[850px] z-0 pointer-events-none ${isTopRight ? 'bottom-0 left-0 md:bottom-0 md:left-0' : 'right-0 md:right-0'
+                className={`absolute w-full md:w-[60%] lg:w-[55%] h-[65vh] md:h-[75vh] max-h-[850px] z-0 pointer-events-none ${isTopRight
+                    ? 'bottom-0 left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0'
+                    : 'top-0 left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0'
                   }`}
-                style={{ 
+                style={{
                   top: !isTopRight ? (panel.containerTop || '0') : undefined,
-                  WebkitMaskImage: 'radial-gradient(ellipse closest-side at center, black 30%, transparent 100%)',
-                  maskImage: 'radial-gradient(ellipse closest-side at center, black 30%, transparent 100%)',
+                  WebkitMaskImage: 'radial-gradient(50% 50% at center, black 65%, transparent 100%)',
+                  maskImage: 'radial-gradient(50% 50% at center, black 65%, transparent 100%)',
                 }}
               >
                 <img
