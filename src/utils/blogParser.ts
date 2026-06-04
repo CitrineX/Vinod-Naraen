@@ -65,21 +65,60 @@ function parseFrontmatter(rawString: string): { frontmatter: Record<string, any>
 }
 
 function markdownToHtml(md: string): string {
-  let html = md;
+  if (!md) return '';
+
+  // 1. Handle Decap CMS literal backslash line breaks
+  // A backslash at the end of a line (with or without carriage return)
+  let html = md.replace(/\\(\r?\n|$)/g, '<br />\n');
+  
+  // Handle double-space hard line breaks
+  html = html.replace(/  (\r?\n|$)/g, '<br />\n');
+
+  // 2. Headers
   html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+  
+  // 3. Bold & Italic
   html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  html = html.replace(/___(.*?)___/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+  html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+  
+  // 4. Blockquotes
   html = html.replace(/^>\s*(.*$)/gm, '<blockquote>$1</blockquote>');
+  
+  // 5. Lists (simple parsing)
   html = html.replace(/^- (.*$)/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-  html = html.replace(/^\d+\.\s*(.*$)/gm, '<li>$1</li>');
-  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  
+  // 6. Links and inline code
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
   html = html.replace(/`(.*?)`/g, '<code>$1</code>');
-  html = html.replace(/^(?!<[hubloa])(.*\S.*)$/gm, '<p>$1</p>');
-  return html;
+  
+  // 7. Cleanup remaining stray backslashes not used for line breaks
+  // Markdown uses backslashes to escape characters like \*, \[, etc.
+  html = html.replace(/\\([*_[\]`>#+-.!])/g, '$1');
+
+  // 8. Paragraph wrapping
+  // Split the entire document by double newlines to find block-level chunks
+  const blocks = html.split(/\n\s*\n/);
+  const parsedBlocks = blocks.map(block => {
+    const trimmed = block.trim();
+    if (!trimmed) return '';
+    
+    // If the block is already wrapped in a block-level HTML tag, return as is
+    if (/^<(h[1-6]|ul|ol|li|blockquote)/i.test(trimmed)) {
+      return trimmed;
+    }
+    
+    // Otherwise, wrap it in a standard paragraph tag
+    return `<p>${trimmed}</p>`;
+  });
+  
+  return parsedBlocks.filter(Boolean).join('\n\n');
 }
 
 export function getAllBlogPosts(): BlogPost[] {
