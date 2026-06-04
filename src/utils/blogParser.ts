@@ -1,9 +1,25 @@
 import type { BlogPost } from '../types/blog';
 
-// Using Vite's native static compiler macro to read the local files at build-time
-const blogModules = import.meta.glob('../content/blog/*.md', { eager: true, as: 'raw' });
+// Using Vite's native static compiler macro to read the local files at build-time.
+// query: '?raw' ensures Vite treats it as a raw string instead of an asset URL.
+const blogModules = import.meta.glob('../content/blog/*.md', { eager: true, query: '?raw', import: 'default' });
 
-function parseFrontmatter(raw: string): { frontmatter: Record<string, any>; body: string } {
+function parseFrontmatter(rawString: string): { frontmatter: Record<string, any>; body: string } {
+  let raw = rawString;
+  
+  // Fallback: If Vite unexpectedly compiles the file as a Data URI (Base64) in production, decode it first.
+  if (typeof raw === 'string' && raw.startsWith('data:')) {
+    const base64Match = raw.match(/base64,(.*)$/);
+    if (base64Match) {
+      try {
+        // Decode Base64 safely handling UTF-8
+        raw = decodeURIComponent(escape(atob(base64Match[1])));
+      } catch (e) {
+        console.error("Failed to decode base64 markdown:", e);
+      }
+    }
+  }
+
   const match = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, body: raw };
 
